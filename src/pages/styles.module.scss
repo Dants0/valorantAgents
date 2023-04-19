@@ -1,11 +1,19 @@
 .containerAgents{
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    border: 1px solid #ccc;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px 20px;
+    grid-template-areas:
+        ". ."
+        ". ."
+        ". .";
     margin: 1rem;
+    width: 100%;
     .cardsAgentsDisplay{
         display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         padding: 1rem;
         margin: 1rem;
         border: 1px solid #ccc;
@@ -13,10 +21,10 @@
         overflow: hidden;
         background-color: #F55058;
         li{
-            text-align: center;
+            list-style-type:none;
         }
         img{
-            width: 50vh;
+            width: 100%;
         }
     }
 }

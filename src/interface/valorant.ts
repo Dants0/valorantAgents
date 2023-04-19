@@ -14,8 +14,10 @@ export type AgentList = Agent[];
 interface AgentAssets{
     uuid: string,
     displayName: string,
+    role: string,
     abilities: [
         {
+            description: any;
             displayName: string
         }
     ]

@@ -8,6 +8,7 @@ export default function Home() {
 
   const [valorantAgent, setValorantAgent] = useState<AgentList>([])
   const [valorantAgentAssets, setValorantAgentAssets] = useState<AgentAssetsList>([])
+  const [orderListAsc, setOrderListAsc] = useState("asc")
 
   useEffect(() => {
     async function getValorantAgents(): Promise<void> {
@@ -21,10 +22,13 @@ export default function Home() {
   }, [])
 
   const getAbilitiesByAgentName = (agentName: string) => {
-    try{
+    try {
       const abilityAgent = valorantAgentAssets.find(agent => agent.displayName === agentName)
-      return abilityAgent?.abilities.map((abilities)=>abilities.displayName)
-    }catch(err){
+      console.log(abilityAgent)
+      return abilityAgent?.abilities.map((abilities) =>
+        abilities.displayName.concat(" : ",
+        abilities.description))
+    } catch (err) {
       console.log(err)
       return []
     }
@@ -32,24 +36,56 @@ export default function Home() {
 
   const returnAbilitiesByAgentName = (agentName: string) => {
     const abilitiesArray = getAbilitiesByAgentName(agentName)
-    return abilitiesArray?.map((agent, index) =>{
-      return <div key={index}>{agent}</div>
+    console.log(abilitiesArray)
+    return abilitiesArray?.map((ability,index) => {
+      return <div key={index}>{ability}</div>
     })
   }
 
+  const getRoleByAgentName = (agentName: string) => {
+    try {
+      const roleAgent = valorantAgentAssets.find(agent => agent.displayName === agentName)
+      return <div>{roleAgent?.role.displayName}</div>
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const orderListByAgentName = () => {
+    const sortedAgents = valorantAgent.sort((a,b) => {
+      if(orderListAsc === "asc"){
+        return a.displayName.localeCompare(b.displayName)
+      }else{
+        return b.displayName.localeCompare(a.displayName)
+      }
+    })
+    return sortedAgents
+  }
+
+  const handleToggleOrderListAgents = (e: any) => {
+    e.preventDefault()
+    if(orderListAsc === "asc"){
+      return setOrderListAsc("desc")
+    }else{
+      return setOrderListAsc("asc")
+    }
+  }
+
+  orderListByAgentName()
   return (
     <>
+        <button onClick={handleToggleOrderListAgents}>alterar ordem</button>
       <div className={styles.containerAgents}>
         {
-          valorantAgent.filter(agent => agent.isPlayableCharacter===true).map((agent, index) => {
+          valorantAgent.filter(agent => agent.isPlayableCharacter === true).map((agent, index) => {
             return (
-              <div key={index} className={styles.cardsAgentsDisplay}>
-                <ul>
-                  <li>{agent.displayName.concat(" - ", agent.developerName)}</li>
-                  <li>{agent.description}</li>
-                  <li>{returnAbilitiesByAgentName(agent.displayName)}</li>
-                </ul>
-                  <img src={agent.bustPortrait} alt="agentBackground" />
+              <div key={index} className={styles.cardsAgentsDisplay}><ul>
+                <li>{agent.displayName.concat(" - ", agent.developerName)}</li>
+                <li>{agent.description}</li>
+                <li>Habilidades : {returnAbilitiesByAgentName(agent.displayName)}</li>
+                <p>Posição : {getRoleByAgentName(agent.displayName)}</p>
+              </ul>
+                <img src={agent.bustPortrait} alt="agentBackground" />
               </div>
             )
           })
